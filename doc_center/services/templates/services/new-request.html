@@ -1,0 +1,29 @@
+<!-- extend base template -->
+{% extends 'core/base.html' %}
+
+<!-- title -->
+{% block title %} Requests {% endblock %}
+
+<!-- bread crumbs -->
+{% block crumbs %} New Request {% endblock %}
+
+<!-- content for the body -->
+{% block content %}
+
+<div >
+   <h3>Add a new service request</h3>
+</div>
+
+
+<div>
+    <form action="" method="post">
+        {% csrf_token %}
+        
+        {{form.as_p}}
+
+        <button type="submit">Submit Request</button>
+    </form>
+    
+</div>
+
+{% endblock %}

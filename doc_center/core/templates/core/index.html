@@ -1,0 +1,99 @@
+<!-- extend base template -->
+{% extends 'core/base.html' %}
+
+<!-- title -->
+{% block title %} Dashboard {% endblock %}
+
+<!-- bread crumbs -->
+{% block crumbs %} Dashboard {% endblock %}
+
+<!-- content for the body -->
+{% block content %}
+
+
+    <canvas id="myChart" height="200px" width="500px"></canvas>
+
+    {% block script %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script language="Javascript">
+      const ctx = document.getElementById('myChart').getContext('2d');
+      const myChart = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels : ["{% for document in documents %} {{document.name}}  {% endfor %}"],
+          datasets: [{
+            label: "Documents",
+            data: ["{{borrowed.count}}"],
+            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+          }]
+      },
+      options: {
+          scales: {
+              y: {
+                  beginAtZero: true
+              }
+          }
+      }
+  });
+    </script>
+
+    {% endblock %}
+
+
+    <!-- borrowed books -->
+    <div class="mt-2 ">
+        <h3 class="mb-3 text-2xl font-semibold">Borrowed documents</h3>
+        <div>
+                 <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Id</th>
+                        <th>Borrowed</th>
+                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Name</th>
+                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Category</th>
+                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Issued_to</th>
+                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Issued by</th>
+                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Due date</th>
+                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Document Actions</th>
+                    </tr>
+                </thead>
+
+                <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 shadow-md rounded-sm">
+                    {% for document in borrowed %}
+                      <tr>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.id }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap"> 
+                            <form action="{% url 'library:return-document' document.id %}" method="post">
+                                {% csrf_token %}
+                               <input type="checkbox" name="borrowed" {% if document.borrowed %} checked {% endif %}> 
+                               <input type="submit" name="borrowed" value="{{document.borrowed}}" >
+                            </form>
+                            {{checked}}
+                        </td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.name }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.categories.name }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.issued_to }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.issued_by }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.return_date }}</td>
+                        <td>
+                            <div class="flex space-x-4 justify-center">
+                                <a href="{% url 'library:document' document.id %}">Details</a>
+                                <a href="{% url 'library:update-document' document.id %}">Edit</a>
+                                <a href="{% url 'library:delete-document' document.id %}">Delete</a>
+                                <!-- only show the lend action when document.borrowed is false -->
+                                {% if document.borrowed == False %}
+                                <a href="{% url 'library:issue-document' document.id %}">Lend</a>
+                                {% endif %}
+                            </div>
+                        </td>
+                      </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
