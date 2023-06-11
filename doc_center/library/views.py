@@ -88,6 +88,7 @@ def issueDocument(request, pk):
     return render(request, "library/issue-document.html", {"form": form, "object": document})
 
 # mark borrowed books as returned
+@login_required
 def returnDocument(request, pk):
     document = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
