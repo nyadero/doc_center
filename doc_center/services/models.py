@@ -15,9 +15,20 @@ class ServiceType(models.Model):
     
 # services models
 class Service(models.Model):
-    name = models.CharField(max_length=255)
-    type = models.ForeignKey(ServiceType, related_name="type", on_delete=models.CASCADE)
-    description = models.TextField()
-    price = models.IntegerField(null=False)
-    date_created = models.DateTimeField(auto_now_add=True)
+    title_of_document = models.CharField(max_length=255)
+    department = models.CharField(max_length=255)
+    customers_name = models.CharField(max_length=255)
+    customers_signature = models.IntegerField(help_text="Use id number")
+    no_of_pages = models.IntegerField()
+    quantity_rate = models.IntegerField()
+    total = models.IntegerField()
+    date_created = models.DateField(auto_now=True)
+    type = models.ForeignKey(ServiceType, related_name="types", on_delete=models.CASCADE)
     user = models.ForeignKey(User, related_name="type", on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ('title_of_document',)
+        verbose_name_plural = "Services"
+
+    def __str__(self) -> str:
+        return self.name

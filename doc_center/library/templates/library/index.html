@@ -18,17 +18,15 @@
     </form>
 </div>
 
-<div class="flex justify-between items-center mb-3">
-    <!-- map document categories -->
+<!-- filter returned books, all books, overdue books -->
+<!-- <div class="flex justify-between items-center mb-3">
     <div class="flex items-center space-x-6">
-        {% for category in categories %}
-            <form action="{% url 'library:search-documents' %}" method="get" value="{{category.name}}" class="bg-white rounded-lg p-2 shadow-md flex gap-2 cursor-pointer">
-                <input type="submit" name="search" value="{{category.name}}" {{ category.name}} />
-                <h3 class="text-blue-600">{{category.documents.count}}</h3>
-            </form> 
-        {% endfor %}
+        <form action="{% url 'library:search-documents' %}" method="get" value="{{category.name}}" class="bg-white rounded-lg p-2 shadow-md flex gap-2 cursor-pointer">
+            <input type="submit" name="search" value="returned"/>
+            <h3 class="text-blue-600">Returned books</h3>
+        </form> 
     </div> 
-</div>
+</div> -->
 
 
 <!-- <div class="mt-6"> -->
@@ -44,51 +42,34 @@
     <div class="">
         <!-- loop documents -->
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-800">
+                <thead class="bg-blue-600 dark:bg-gray-800">
                     <tr>
-                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Id</th>
-                        <th>Borrowed</th>
-                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Name</th>
-                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Category</th>
-                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Issued_to</th>
-                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Date Created</th>
-                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Created by</th>
-                        <th scope="col" class="px-6 py-3.5 text-md font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Document Actions</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Id</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Title</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Author</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Issued_to</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Date Borrowed</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Due Date</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Issued by</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Date Returned</th>
+                        <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Receive Back</th>
+                        <!-- <th scope="col" class="px-6 py-3.5 text-lg font-normal text-left rtl:text-right text-gray-500 dark:text-gray-400">Document Actions</th> -->
                     </tr>
                 </thead>
 
-                <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700 dark:bg-gray-900 shadow-md rounded-sm">
+                <tbody class="bg-white divide-y divide-gray-200 dark:divide-gray-700  shadow-md rounded-sm">
                     {% for document in documents %}
                       <tr>
                         <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.id }}</td>
-                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap"> 
-                            <a href="{% url 'library:return-document' document.id %}">
-                            <form action="" method="post">
-                                {% csrf_token %}
-                               <input type="checkbox" name="borrowed" value="{{request.GET.borrowed}}" {% if document.borrowed %} checked {% endif %}> 
-                            </form>
-                            </a>
-                            {{checked}}
-                        </td>
-                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.name }}</td>
-                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.categories.name }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.title }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.author }}</td>
                         <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.issued_to }}</td>
-                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.created_at }}</td>
-                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.created_by.username }}</td>
-                        <td>
-                            <div class="flex space-x-4 justify-center">
-                                <a href="{% url 'library:document' document.id %}">Details</a>
-                                {% if document.created_by.username == request.authenticated.user %}
-                                <a href="{% url 'library:update-document' document.id %}">Edit</a>
-                                {% endif %}
-                                {% if document.created_by.username == request.authenticated.user %}
-                                <a href="{% url 'library:delete-document' document.id %}">Delete</a>
-                                {% endif %}
-                                <!-- only show the lend action when document.borrowed is false -->
-                                {% if document.borrowed == False %}
-                                <a href="{% url 'library:issue-document' document.id %}">Lend</a>
-                                {% endif %}
-                            </div>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.date_borrowed }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.due_back }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap capitalize">{{ document.issuing_officer.username }}</td>
+                        <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap">{{ document.date_returned }}</td>
+                         <td class="px-6 py-3.5 text-lg font-medium text-left rtl:text-right whitespace-nowrap"> 
+                            <a href="{% url 'library:return-book' document.id %}" class="text-blue-600 text-lg" >Receive Back</a> 
                         </td>
                       </tr>
                     {% endfor %}

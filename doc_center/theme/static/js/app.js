@@ -79,4 +79,9 @@ showDocumentDetails.forEach(button => button.addEventListener("click", () => {
       })
 );
 
-// chartjs
+// mark book as returned or not using checkbox
+const returnedCheckbox = document.querySelector("#returned");
+const returnedForm = document.querySelector("#returnForm")
+returnedCheckbox.addEventListener("change", () => {
+    returnedForm.submit();
+})

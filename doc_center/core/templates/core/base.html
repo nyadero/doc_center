@@ -25,17 +25,17 @@
                         <a href="/" class="text-2xl font-medium text-black dark:text-white mb-4 active::text-red-500">
                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">Dashboard</li>
                         </a>
-                        <a href="{% url 'services:index' %}" class="text-2xl font-medium">
-                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">Requests</li>
+                        <a href="{% url 'services:index' %}" class="text-2xl font-medium text-black dark:text-white mb-4">
+                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">Services</li>
                         </a>
                         <a href="{% url 'services:new-request' %}" class="text-2xl font-medium text-black dark:text-white mb-4">
-                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">New Request</li>
+                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">New Service</li>
                         </a>
                         <a href="{% url 'library:index' %}" class="text-2xl font-medium text-black dark:text-white mb-4">
-                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">Documents</li>
+                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">Books</li>
                         </a>
                         <a href="{% url 'library:new-document' %}" class="text-2xl font-medium text-black dark:text-white mb-4">
-                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">New Document</li>
+                            <li class="mb-2 bg-blue-500 p-2 rounded-md w-full cursor-pointer focus:bg-blue-900">Lend Book</li>
                         </a>
                     </ul>
                 </nav>
@@ -53,6 +53,7 @@
                     <!-- navigation list -->
                     <ul class="flex items-center space-x-6">
                         {% if request.user.is_authenticated %}
+                        <li><a href="{% url 'admin:index' %}" class="text-lg font-semibold bg-blue-500 hover:bg-blue-700 text-white rounded-lg p-2">Admin Dashboard</a></li>  
                         <li><a href="#" class="text-lg font-semibold bg-blue-500 hover:bg-blue-700 text-white rounded-lg p-2">{{request.user.username}}</a></li>
                         <li><a href="{% url 'logout' %}" class="text-lg font-semibold bg-red-400 hover:bg-red-700 text-white rounded-lg p-2">Logout</a></li> 
                         {% else %}
@@ -63,7 +64,7 @@
                     </nav>
 
                 <!-- main body -->
-                <section class="h-screen">
+                <section class="min-h-screen">
                     <!-- loader -->
                    <div class="h-screen flex justify-center items-center  z-10" id="loading_container" >
                       <!-- <div class="w-64 h-64 rounded-full bg-blue-600 border-solid " id="spinner" >Loading .....</div> -->

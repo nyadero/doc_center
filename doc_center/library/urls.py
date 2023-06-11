@@ -11,7 +11,7 @@ urlpatterns =[
     # issue a document
     re_path(r'^issue-document/(?P<pk>\d+)', views.issueDocument, name="issue-document"),
     # mark document as returned
-    re_path(r'^return/(?P<pk>)\d+', views.returnDocument, name="return-document"),
+    re_path(r'^return-book/(?P<pk>\d+)', views.returnDocument, name="return-book"),
     # document by id
     re_path(r'^document/(?P<pk>\d+)', views.singleDocument, name="document"),
      # documents by category

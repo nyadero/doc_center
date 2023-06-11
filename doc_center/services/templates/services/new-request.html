@@ -10,18 +10,13 @@
 <!-- content for the body -->
 {% block content %}
 
-<div >
-   <h3>Add a new service request</h3>
-</div>
-
-
 <div>
     <form action="" method="post">
         {% csrf_token %}
         
         {{form.as_p}}
 
-        <button type="submit">Submit Request</button>
+        <button type="submit" class="bg-blue-700 text-white px-3 py-2 rounded-md shadow-md text-lg" >Submit Request</button>
     </form>
     
 </div>

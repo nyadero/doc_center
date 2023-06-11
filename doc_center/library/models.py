@@ -3,28 +3,25 @@ from django.db import models
 from django.contrib.auth.models import User
 
 # Create your models here.
-# category for the documents e.g books, reports, 
-class Category(models.Model):
-    name=models.CharField(max_length=255, unique=True)
-
-    class Meta:
-        ordering = ('name',)
-        verbose_name_plural = "Categories"
-
-    def __str__(self) -> str:
-        return self.name
-    
+#     
 # documents
-class Document(models.Model):
-    name = models.CharField(max_length=255)
-    categories = models.ForeignKey(Category, related_name="documents", on_delete=models.CASCADE)
+class Book(models.Model):
+    author = models.CharField(max_length=255)
+    title = models.CharField(max_length=255)
+    no_of_volume = models.CharField(max_length=255, null=True)
     issued_to = models.CharField(max_length=255, null=True)
-    description = models.TextField(null=True, blank=True)
-    image = models.ImageField(upload_to="document_images", blank=True, null=True)
+    borrower_signature = models.IntegerField(null=False)
     created_at = models.DateTimeField(auto_now_add=True)
     returned = models.BooleanField(default=False)
     borrowed = models.BooleanField(default=False)
-    issued_by = models.CharField(max_length=255, null=True)
-    created_by = models.ForeignKey(User, related_name="documents", on_delete=models.CASCADE)
-    return_date = models.DateField(null=True)
+    issuing_officer = models.ForeignKey(User, related_name="books", on_delete=models.CASCADE, default=1)
+    due_back = models.DateField(null=False)
+    date_borrowed = models.DateField(null=False)
+    date_returned = models.DateField(null = True)
 
+    class Meta:
+        ordering = ('title',)
+        verbose_name_plural = "Books"
+
+    def __str__(self) -> str:
+        return self.title

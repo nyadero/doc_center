@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect, reverse
 from django.contrib.auth.decorators import login_required
 
 from .forms import RequestForm
+from .models import Service
 
 # Create your views here.
 def index(request):
-    return render(request, "services/index.html")
+    services = Service.objects.order_by("-id")
+    return render(request, "services/index.html", {"services": services})
 
 # new request
 @login_required

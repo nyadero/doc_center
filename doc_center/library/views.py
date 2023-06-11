@@ -3,19 +3,17 @@ from django.urls import reverse
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 
-from .models import Category, Document
+from .models import Book
 
-from .forms import NewDocumentForm, LendDocument
+from .forms import NewDocumentForm, LendDocument, ReturnBook
 
 # Create your views here.
 
 # index
 def index(request):
     # find all documents
-    documents = Document.objects.all().order_by("created_at")
-    # categories
-    categories = Category.objects.all()
-    return render(request, "library/index.html", {"documents": documents, "categories": categories})
+    documents = Book.objects.filter(returned = False).order_by("-id").all()
+    return render(request, "library/index.html", {"documents": documents})
 
 # search documents
 def documentsByCategory(request):
@@ -23,9 +21,8 @@ def documentsByCategory(request):
         query = request.GET.get("search")
         searchRequest = request.GET.get("search")
         if query is not None:
-            lookup = Q(name__icontains = query) | Q(issued_to__icontains = query) | Q(description__icontains = query)
-            documents = Document.objects.filter(lookup).distinct()
-            # category = Document.objects.filter(categories=Category.objects.get())
+            lookup = Q(title__icontains = query) | Q(author__icontains = query) | Q(issued_to__icontains = query)
+            documents = Book.objects.filter(lookup).distinct()
             return render(request, "library/index.html", {"query": query, "documents": documents, "searchRequest": searchRequest})
         else:
             return render(request, "library/index.html")  
@@ -39,7 +36,7 @@ def newDocument(request):
         form = NewDocumentForm(request.POST, request.FILES)
         if form.is_valid():
             document= form.save(commit=False)
-            document.created_by = request.user
+            document.issuing_officer = request.user
             document.save()
             return redirect("library:index")
     else:
@@ -49,13 +46,13 @@ def newDocument(request):
 
 # document by id
 def singleDocument(request, pk):
-    document = get_object_or_404(Document, pk=pk)
+    document = get_object_or_404(Book, pk=pk)
     return render(request, "library/document.html", {'document': document})
 
 # update document
 @login_required
 def updateDocument(request, pk):
-    document = get_object_or_404(Document, pk=pk)
+    document = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
         form = NewDocumentForm(instance=document, data=request.POST)
         if form.is_valid():
@@ -69,14 +66,14 @@ def updateDocument(request, pk):
 # delete document
 @login_required
 def deleteDocument(request, pk):
-    document_object = get_object_or_404(Document, pk=pk)
+    document_object = get_object_or_404(Book, pk=pk)
     document_object.delete()
     return redirect(reverse("library:index"))
 
 # issue book only when the column borrowed is false
 @login_required
 def issueDocument(request, pk):
-    document = get_object_or_404(Document, pk=pk)
+    document = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
         form = LendDocument(instance=document, data=request.POST)
         if form.is_valid():
@@ -92,15 +89,12 @@ def issueDocument(request, pk):
 
 # mark borrowed books as returned
 def returnDocument(request, pk):
-    document_object = get_object_or_404(Document, pk=pk)
+    document = get_object_or_404(Book, pk=pk)
     if request.method == "POST":
-        checked = request.POST.get("borrowed")
-        if checked:
-            document = document_object.save(commit=False)
-            document.borrowed = False
-            document.save()
-        else:
-            document = document_object.save(commit=False)
-            document.borrowed =True
-            document.save()
-    render(request, "library/index.html", {"checked" : checked})
+        form = ReturnBook(instance=document, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("library:index")
+    else:
+        form = ReturnBook(instance=document)
+    return render(request, "library/edit-document.html", {"form": form, "object": document})

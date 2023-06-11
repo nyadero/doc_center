@@ -1,9 +1,7 @@
 from django.contrib import admin
 
-from .models import Category, Document
+from .models import Book
 
 # Register your models here.
-# register category model
-admin.site.register(Category)
 # register document model
-admin.site.register(Document)
+admin.site.register(Book)
